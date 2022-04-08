@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:get/get_state_manager/get_state_manager.dart';
-import 'package:get/instance_manager.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:state_app/controller.dart';
 
 void main() {
@@ -18,7 +17,9 @@ class MyApp extends StatelessWidget {
       theme: ThemeData(
         primarySwatch: Colors.blue,
       ),
-      home: const MyHomePage(title: 'Flutter Demo Home Page'),
+      home: BlocProvider(
+          create: (_) => CounterController(),
+          child: const MyHomePage(title: 'Flutter Demo Home Page')),
     );
   }
 }
@@ -35,7 +36,6 @@ class MyHomePage extends StatefulWidget {
 class _MyHomePageState extends State<MyHomePage> {
   @override
   Widget build(BuildContext context) {
-    final CounterController counterController = Get.put(CounterController());
     return Scaffold(
       appBar: AppBar(
         title: Text(widget.title),
@@ -47,8 +47,10 @@ class _MyHomePageState extends State<MyHomePage> {
             const Text(
               'You have pushed the button this many times:',
             ),
-            Obx(() => Text('${counterController.count}',
-                style: Theme.of(context).textTheme.headline4))
+            BlocBuilder<CounterController, int>(builder: ((context, count) {
+              return Text('$count',
+                  style: Theme.of(context).textTheme.headline4);
+            }))
           ],
         ),
       ),
@@ -56,13 +58,13 @@ class _MyHomePageState extends State<MyHomePage> {
         mainAxisAlignment: MainAxisAlignment.end,
         children: [
           FloatingActionButton(
-            onPressed: counterController.increment,
+            onPressed: context.read<CounterController>().increment,
             tooltip: 'Increment',
             child: const Icon(Icons.add),
           ),
           FloatingActionButton(
-            onPressed: counterController.decrement,
-            tooltip: 'Increment',
+            onPressed: context.read<CounterController>().decrement,
+            tooltip: 'Decrement',
             child: const Icon(Icons.remove),
           ),
         ],

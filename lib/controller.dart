@@ -1,7 +1,7 @@
-import 'package:get/get.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 
-class CounterController extends GetxController {
-  var count = 0.obs;
-  void increment() => count++;
-  void decrement() => count--;
+class CounterController extends Cubit<int> {
+  CounterController() : super(0);
+  void increment() => emit(state + 1);
+  void decrement() => emit(state - 1);
 }
